@@ -2,15 +2,18 @@ const express = require('express');
 const mongoose = require('mongoose');
 const Product = require('./models/productsModel');
 const app = express();
+const dotenv = require('dotenv');
+
+dotenv.config();
+
+const port = process.env.PORT || 3000;
 
 app.use(express.json());
 mongoose
-  .connect(
-    'mongodb+srv://chifez1:chifez10@nodeapi.pvpxpgc.mongodb.net/node-api?retryWrites=true&w=majority'
-  )
+  .connect(process.env.MONGODB_URI)
   .then(() => {
     console.log('connected to mongodb');
-    app.listen(3000, () => {
+    app.listen(port, () => {
       console.log('app is running');
     });
   })
