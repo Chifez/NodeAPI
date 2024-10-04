@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const User = require('../models/user');
 const CryptoJS = require('crypto-js');
+const JWT = require('jsonwebtoken');
 
 // REGISTER
 router.post('/register', async (req, res) => {
@@ -42,7 +43,13 @@ router.post('/login', async (req, res) => {
     }
 
     const { password, ...other } = user._doc;
-    return res.status(200).json(other); // Send success response with user data excluding password
+    const accessToken = JWT.sign(
+      { userId: user._id, isAdmin: user.isAdmin },
+      process.env.SEC_KEY,
+      { expiresIn: '3d' }
+    );
+
+    return res.status(200).json({ ...other, accessToken }); // Send success response with user data excluding password
   } catch (err) {
     console.log(err);
     res.status(500).json(err); // Send error response to the client
