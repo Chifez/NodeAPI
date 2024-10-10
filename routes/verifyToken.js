@@ -4,6 +4,7 @@ const VerifyToken = (req, res, next) => {
   const authHeader = req.headers.token;
 
   if (authHeader) {
+    const token = authHeader.split(' ')[1];
     JWT.verify(token, process.env.SEC_KEY, (err, user) => {
       if (err) {
         res.status(403).json('token is not valid');
@@ -12,7 +13,7 @@ const VerifyToken = (req, res, next) => {
       next();
     });
   } else {
-    return res.status(401).json('you are not authentcated');
+    return res.status(401).json('you are not authenticated');
   }
 };
 
@@ -25,4 +26,18 @@ const VerifyTokenAndAuthorization = (req, res, next) => {
     }
   });
 };
-module.exports = { VerifyToken, VerifyTokenAndAuthorization };
+
+const VerifyTokenAndAdmin = (req, res, next) => {
+  VerifyToken(req, res, () => {
+    if (req.user.isAdmin) {
+      next();
+    } else {
+      res.status(403).json('you are not authorized to do that');
+    }
+  });
+};
+module.exports = {
+  VerifyToken,
+  VerifyTokenAndAuthorization,
+  VerifyTokenAndAdmin,
+};

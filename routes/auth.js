@@ -11,7 +11,7 @@ router.post('/register', async (req, res) => {
     password: CryptoJS.AES.encrypt(
       req.body.password,
       process.env.PASS_SEC
-    ).toString(), // Make sure to convert to string
+    ).toString(),
   });
 
   try {
@@ -19,7 +19,7 @@ router.post('/register', async (req, res) => {
     res.status(201).json(savedUser);
   } catch (err) {
     console.log(err);
-    res.status(500).json(err); // Send error response to the client
+    res.status(500).json(err);
   }
 });
 
@@ -49,10 +49,10 @@ router.post('/login', async (req, res) => {
       { expiresIn: '3d' }
     );
 
-    return res.status(200).json({ ...other, accessToken }); // Send success response with user data excluding password
+    return res.status(200).json({ ...other, accessToken });
   } catch (err) {
     console.log(err);
-    res.status(500).json(err); // Send error response to the client
+    res.status(500).json(err);
   }
 });
 
