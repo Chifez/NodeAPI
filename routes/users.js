@@ -24,7 +24,8 @@ router.put('/:id', VerifyTokenAndAuthorization, async (req, res) => {
       },
       { new: true }
     );
-    res.status(200).json(updateUser);
+    const { password, ...others } = updateUser;
+    res.status(200).json(others);
   } catch (err) {
     res.status(500).json(`An error occured ${err}`);
   }
@@ -44,9 +45,48 @@ router.delete('/:id', VerifyTokenAndAuthorization, async (req, res) => {
 // get user
 router.get('/find/:id', VerifyTokenAndAdmin, async (req, res) => {
   try {
-    const foundUser = User.findById(req.params.id);
+    const foundUser = await User.findById(req.params.id);
     const { password, ...others } = foundUser._doc;
     res.status(200).json(others);
+  } catch (err) {
+    res.status(500).json('an error occured');
+  }
+});
+
+// get all user
+
+router.get('/', VerifyTokenAndAdmin, async (req, res) => {
+  const query = req.query.new;
+  try {
+    const allUser = query
+      ? await User.find().sort({ _id: -1 }).limit(4)
+      : await User.find();
+    res.status(200).json(allUser);
+  } catch (err) {
+    res.status(500).json('an error occured');
+  }
+});
+
+// get user stat
+
+router.get('/stats', VerifyTokenAndAdmin, async (req, res) => {
+  const date = new Date();
+  const lastYear = new Date(date.setFullYear(date.getFullYear() - 1));
+  try {
+    const data = await User.aggregate([
+      { $match: { createdAt: { $gte: lastYear } } },
+      {
+        $project: {
+          month: { $month: 'createdAt' },
+        },
+      },
+      {
+        $group: {
+          _id: '$month',
+          total: { $sum: 1 },
+        },
+      },
+    ]);
   } catch (err) {
     res.status(500).json('an error occured');
   }

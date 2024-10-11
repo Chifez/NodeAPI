@@ -16,7 +16,8 @@ router.post('/register', async (req, res) => {
 
   try {
     const savedUser = await newUser.save();
-    res.status(201).json(savedUser);
+    const { password, ...others } = savedUser._doc;
+    res.status(201).json(others);
   } catch (err) {
     console.log(err);
     res.status(500).json(err);
@@ -44,7 +45,7 @@ router.post('/login', async (req, res) => {
 
     const { password, ...other } = user._doc;
     const accessToken = JWT.sign(
-      { userId: user._id, isAdmin: user.isAdmin },
+      { id: user._id, isAdmin: user.isAdmin },
       process.env.SEC_KEY,
       { expiresIn: '3d' }
     );
