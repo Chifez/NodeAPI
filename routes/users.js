@@ -31,8 +31,7 @@ router.put('/:id', VerifyTokenAndAuthorization, async (req, res) => {
   }
 });
 
-//Delete
-
+// Delete a user
 router.delete('/:id', VerifyTokenAndAuthorization, async (req, res) => {
   try {
     await User.findByIdAndDelete(req.params.id);
@@ -77,7 +76,7 @@ router.get('/stats', VerifyTokenAndAdmin, async (req, res) => {
       { $match: { createdAt: { $gte: lastYear } } },
       {
         $project: {
-          month: { $month: 'createdAt' },
+          month: { $month: '$createdAt' },
         },
       },
       {
@@ -89,7 +88,7 @@ router.get('/stats', VerifyTokenAndAdmin, async (req, res) => {
     ]);
     res.status(200).json(data);
   } catch (err) {
-    res.status(500).json('an error occured');
+    res.status(500).json(`an error occured, ${err}`);
   }
 });
 module.exports = router;
