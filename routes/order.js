@@ -1,67 +1,64 @@
 const router = require('express').Router();
-const Cart = require('./models/cart');
-
+const cart = require('../models/cart');
+const Order = require('./models/order');
 const {
   VerifyTokenAndAuthorization,
   VerifyTokenAndAdmin,
 } = require('./verifyToken');
 
-// create cart
+// create order
 router.post('/', VerifyTokenAndAuthorization, async (req, res) => {
-  const newCart = new Cart(req.body);
+  const newOrder = new Order(req.body);
   try {
-    const savedCart = await newCart.save();
-    res.status(200).json(savedCart);
+    const savedOrder = await newOrder.save();
+    res.status(200).json(savedOrder);
   } catch (err) {
-    res.status(500).json('An error occured');
+    res.status(500).json('An error occcured');
   }
 });
 
-// update cart
+// update order
 router.put('/:id', VerifyTokenAndAuthorization, async (req, res) => {
   try {
-    const updatedCart = await Cart.findByIdAndUpdate(
+    const updatedOrder = await cart.findByIdAndUpdate(
       req.params.id,
       {
         $set: req.body,
       },
       { new: true }
     );
-    res.status(200).json(updatedCart);
+    res.status(200).json(updatedOrder);
   } catch (err) {
     res.status(500).json('An error occurred');
   }
 });
 
-// delete cart
+// delete order
 router.delete('/:id', VerifyTokenAndAuthorization, async (req, res) => {
   try {
-    await Cart.findByIdAndDelete(req.params.id);
-    res.status(200).json('Cart has been deleted');
+    await Order.findByIdAndDelete(req.params.id);
+    res.status(200).json('Order deleted successfully');
   } catch (err) {
     res.status(500).json('An error occurred');
   }
 });
 
-// get cart
+// get order
 router.get('/:id', VerifyTokenAndAuthorization, async (req, res) => {
   try {
-    const cart = await Cart.findOne({ userId: req.params.id });
-    res.status(200).json(cart);
+    const order = await Order.findOne({ userId: req.params.id });
+    res.status(200).json(order);
   } catch (err) {
     res.status(500).json('An error occurred');
   }
 });
 
-// get all cart
+// get all order
 router.get('/', VerifyTokenAndAdmin, async (req, res) => {
-  const query = req.query.new;
   try {
-    const allCart = query
-      ? await Cart.find().sort({ createdAt: -1 }).limit(4)
-      : await Cart.find().limit(4);
-    res.status(200).json(allCart);
+    const order = await Order.find().sort({ createdAt: -1 }).limit(5);
+    res.status(200).json(order);
   } catch (err) {
-    res.status(500).json('An error occured');
+    res.status(500).json('An error occurred');
   }
 });

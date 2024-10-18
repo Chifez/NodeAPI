@@ -58,11 +58,11 @@ router.get('/', VerifyTokenAndAdmin, async (req, res) => {
   const query = req.query.new;
   try {
     const allUser = query
-      ? await User.find().sort({ _id: -1 }).limit(4)
-      : await User.find();
+      ? await User.find().sort({ _id: -1 }).limit(4).select('-password')
+      : await User.find().select('-password');
     res.status(200).json(allUser);
   } catch (err) {
-    res.status(500).json('an error occured');
+    res.status(500).json(`an error occured ${err}`);
   }
 });
 
