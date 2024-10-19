@@ -1,5 +1,4 @@
 const router = require('express').Router();
-const cart = require('../models/cart');
 const Order = require('./models/order');
 const {
   VerifyTokenAndAuthorization,
@@ -62,3 +61,42 @@ router.get('/', VerifyTokenAndAdmin, async (req, res) => {
     res.status(500).json('An error occurred');
   }
 });
+
+router.get('/income', VerifyTokenAndAdmin, async (req, res) => {
+  const date = new Date();
+  const lastMonth = new Date(date.setMonth(date.getMonth() - 1));
+  const previousMonth = new Date(
+    date.setMonth(date.getMonth(lastMonth.getMonth() - 1))
+  );
+
+  try {
+    const income = await Order.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: previousMonth,
+          },
+        },
+      },
+      {
+        $project: {
+          month: {
+            $month: '$createdAt',
+          },
+          sales: '$amount',
+        },
+      },
+      {
+        $group: {
+          _id: '$month',
+          amount: { $sum: '$sales' },
+        },
+      },
+    ]);
+    res.status(200).json(income);
+  } catch (err) {
+    res.status(500).json('An error occured');
+  }
+});
+
+module.exports = router;
