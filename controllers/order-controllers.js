@@ -1,7 +1,7 @@
 const Order = require('./models/order');
 
 // create order
-export const createOrder = async (req, res) => {
+const createOrder = async (req, res) => {
   const newOrder = new Order(req.body);
   try {
     const savedOrder = await newOrder.save();
@@ -12,7 +12,7 @@ export const createOrder = async (req, res) => {
 };
 
 // update order
-export const updateOrder = async (req, res) => {
+const updateOrder = async (req, res) => {
   try {
     const updatedOrder = await cart.findByIdAndUpdate(
       req.params.id,
@@ -28,7 +28,7 @@ export const updateOrder = async (req, res) => {
 };
 
 // delete order
-export const deleteOrder = async (req, res) => {
+const deleteOrder = async (req, res) => {
   try {
     await Order.findByIdAndDelete(req.params.id);
     res.status(200).json('Order deleted successfully');
@@ -38,7 +38,7 @@ export const deleteOrder = async (req, res) => {
 };
 
 // get order
-export const getOrder = async (req, res) => {
+const getOrder = async (req, res) => {
   try {
     const order = await Order.findOne({ userId: req.params.id });
     res.status(200).json(order);
@@ -48,7 +48,7 @@ export const getOrder = async (req, res) => {
 };
 
 // get all order
-export const getAllOrder = async (req, res) => {
+const getAllOrder = async (req, res) => {
   try {
     const order = await Order.find().sort({ createdAt: -1 }).limit(5);
     res.status(200).json(order);
@@ -57,7 +57,7 @@ export const getAllOrder = async (req, res) => {
   }
 };
 
-export const getIncome = async (req, res) => {
+const getIncome = async (req, res) => {
   const date = new Date();
   const lastMonth = new Date(date.setMonth(date.getMonth() - 1));
   const previousMonth = new Date(
@@ -92,4 +92,13 @@ export const getIncome = async (req, res) => {
   } catch (err) {
     res.status(500).json('An error occured');
   }
+};
+
+module.exports = {
+  createOrder,
+  updateOrder,
+  deleteOrder,
+  getOrder,
+  getAllOrder,
+  getIncome,
 };

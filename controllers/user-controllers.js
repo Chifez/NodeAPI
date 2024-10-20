@@ -2,7 +2,7 @@ const CryptoJS = require('crypto-js');
 const User = require('../models/user');
 
 // getUser controller
-export const getUser = async (req, res) => {
+const getUser = async (req, res) => {
   if (req.user.password) {
     req.user.password = CryptoJS.AES.encrypt(
       req.user.password,
@@ -26,7 +26,7 @@ export const getUser = async (req, res) => {
 };
 
 //delete User
-export const deleteUser = async (req, res) => {
+const deleteUser = async (req, res) => {
   try {
     await User.findByIdAndDelete(req.params.id);
     res.status(200).json('user has been deleted');
@@ -36,7 +36,7 @@ export const deleteUser = async (req, res) => {
 };
 
 // get a user
-export const getAUser = async (req, res) => {
+const getAUser = async (req, res) => {
   try {
     const foundUser = await User.findById(req.params.id);
     const { password, ...others } = foundUser._doc;
@@ -46,7 +46,7 @@ export const getAUser = async (req, res) => {
   }
 };
 
-export const getAllUser = async (req, res) => {
+const getAllUser = async (req, res) => {
   const query = req.query.new;
   try {
     const allUser = query
@@ -58,7 +58,7 @@ export const getAllUser = async (req, res) => {
   }
 };
 
-export const getUserStats = async (req, res) => {
+const getUserStats = async (req, res) => {
   const date = new Date();
   const lastYear = new Date(date.setFullYear(date.getFullYear() - 1));
   try {
@@ -81,3 +81,5 @@ export const getUserStats = async (req, res) => {
     res.status(500).json(`an error occured, ${err}`);
   }
 };
+
+module.exports = { getUser, deleteUser, getAUser, getAllUser, getUserStats };

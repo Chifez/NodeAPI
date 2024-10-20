@@ -1,7 +1,7 @@
 const Product = require('../models/product');
 
 // create a product
-export const createProduct = async (req, res) => {
+const createProduct = async (req, res) => {
   const newProduct = new Product(req.body);
 
   try {
@@ -13,7 +13,7 @@ export const createProduct = async (req, res) => {
 };
 
 // update a product
-export const updateProduct = async (req, res) => {
+const updateProduct = async (req, res) => {
   try {
     const updatedProduct = await Product.findByIdAndUpdate(
       req.params.id,
@@ -29,7 +29,7 @@ export const updateProduct = async (req, res) => {
 };
 
 // delete a product
-export const deleteProduct = async (req, res) => {
+const deleteProduct = async (req, res) => {
   try {
     await Product.findByIdAndDelete(req.params.id);
     res.status(200).json('The product has been deleted');
@@ -39,7 +39,7 @@ export const deleteProduct = async (req, res) => {
 };
 
 // get all product
-export const getAllProduct = async (req, res) => {
+const getAllProduct = async (req, res) => {
   const qNew = req.query.new;
   const qCategory = req.query.category;
   try {
@@ -63,11 +63,19 @@ export const getAllProduct = async (req, res) => {
 };
 
 // get a product
-export const getAProduct = async (req, res) => {
+const getAProduct = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
     res.status(200).json(product);
   } catch (err) {
     res.status(500).json('An error occurred');
   }
+};
+
+module.exports = {
+  createProduct,
+  updateProduct,
+  deleteProduct,
+  getAllProduct,
+  getAProduct,
 };

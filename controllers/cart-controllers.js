@@ -1,7 +1,7 @@
 const Cart = require('./models/cart');
 
 // create cart
-export const createCart = async (req, res) => {
+const createCart = async (req, res) => {
   const newCart = new Cart(req.body);
   try {
     const savedCart = await newCart.save();
@@ -12,7 +12,7 @@ export const createCart = async (req, res) => {
 };
 
 // update cart
-export const updateCart = async (req, res) => {
+const updateCart = async (req, res) => {
   try {
     const updatedCart = await Cart.findByIdAndUpdate(
       req.params.id,
@@ -28,7 +28,7 @@ export const updateCart = async (req, res) => {
 };
 
 // delete cart
-export const deleteCart = async (req, res) => {
+const deleteCart = async (req, res) => {
   try {
     await Cart.findByIdAndDelete(req.params.id);
     res.status(200).json('Cart has been deleted');
@@ -38,7 +38,7 @@ export const deleteCart = async (req, res) => {
 };
 
 // get cart
-export const getCart = async (req, res) => {
+const getCart = async (req, res) => {
   try {
     const cart = await Cart.findOne({ userId: req.params.id });
     res.status(200).json(cart);
@@ -48,7 +48,7 @@ export const getCart = async (req, res) => {
 };
 
 // get all cart
-export const getAllCart = async (req, res) => {
+const getAllCart = async (req, res) => {
   const query = req.query.new;
   try {
     const allCart = query
@@ -59,3 +59,5 @@ export const getAllCart = async (req, res) => {
     res.status(500).json('An error occured');
   }
 };
+
+module.exports = { createCart, updateCart, deleteCart, getCart, getAllCart };

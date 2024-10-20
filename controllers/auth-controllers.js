@@ -3,7 +3,7 @@ const CryptoJS = require('crypto-js');
 const JWT = require('jsonwebtoken');
 
 // REGISTER
-export const register = async (req, res) => {
+const register = async (req, res) => {
   const newUser = new User({
     username: req.body.username,
     email: req.body.email,
@@ -24,7 +24,7 @@ export const register = async (req, res) => {
 };
 
 // LOGIN
-export const login = async (req, res) => {
+const login = async (req, res) => {
   try {
     const user = await User.findOne({ username: req.body.username });
     if (!user) {
@@ -55,3 +55,5 @@ export const login = async (req, res) => {
     res.status(500).json(err);
   }
 };
+
+module.exports = { register, login };
