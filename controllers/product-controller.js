@@ -1,9 +1,7 @@
-const router = require('express').Router();
 const Product = require('../models/product');
-const { VerifyTokenAndAdmin } = require('./verifyToken');
 
 // create a product
-router.post('/', VerifyTokenAndAdmin, async (req, res) => {
+export const createProduct = async (req, res) => {
   const newProduct = new Product(req.body);
 
   try {
@@ -12,10 +10,10 @@ router.post('/', VerifyTokenAndAdmin, async (req, res) => {
   } catch (err) {
     res.status(500).json('An error occurred');
   }
-});
+};
 
 // update a product
-router.put('/:id', VerifyTokenAndAdmin, async (req, res) => {
+export const updateProduct = async (req, res) => {
   try {
     const updatedProduct = await Product.findByIdAndUpdate(
       req.params.id,
@@ -28,20 +26,20 @@ router.put('/:id', VerifyTokenAndAdmin, async (req, res) => {
   } catch (err) {
     res.status(500).json('An error occurred');
   }
-});
+};
 
 // delete a product
-router.delete('/:id', VerifyTokenAndAdmin, async (req, res) => {
+export const deleteProduct = async (req, res) => {
   try {
     await Product.findByIdAndDelete(req.params.id);
     res.status(200).json('The product has been deleted');
   } catch (err) {
     res.status(500).json('An error occurred');
   }
-});
+};
 
 // get all product
-router.get('/', async (req, res) => {
+export const getAllProduct = async (req, res) => {
   const qNew = req.query.new;
   const qCategory = req.query.category;
   try {
@@ -62,15 +60,14 @@ router.get('/', async (req, res) => {
   } catch (err) {
     res.status(500).json('An error occured');
   }
-});
+};
 
 // get a product
-router.get('/:id', async (req, res) => {
+export const getAProduct = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
     res.status(200).json(product);
   } catch (err) {
     res.status(500).json('An error occurred');
   }
-});
-module.exports = router;
+};

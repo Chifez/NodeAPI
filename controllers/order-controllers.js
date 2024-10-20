@@ -1,12 +1,7 @@
-const router = require('express').Router();
 const Order = require('./models/order');
-const {
-  VerifyTokenAndAuthorization,
-  VerifyTokenAndAdmin,
-} = require('./verifyToken');
 
 // create order
-router.post('/', VerifyTokenAndAuthorization, async (req, res) => {
+export const createOrder = async (req, res) => {
   const newOrder = new Order(req.body);
   try {
     const savedOrder = await newOrder.save();
@@ -14,10 +9,10 @@ router.post('/', VerifyTokenAndAuthorization, async (req, res) => {
   } catch (err) {
     res.status(500).json('An error occcured');
   }
-});
+};
 
 // update order
-router.put('/:id', VerifyTokenAndAuthorization, async (req, res) => {
+export const updateOrder = async (req, res) => {
   try {
     const updatedOrder = await cart.findByIdAndUpdate(
       req.params.id,
@@ -30,39 +25,39 @@ router.put('/:id', VerifyTokenAndAuthorization, async (req, res) => {
   } catch (err) {
     res.status(500).json('An error occurred');
   }
-});
+};
 
 // delete order
-router.delete('/:id', VerifyTokenAndAuthorization, async (req, res) => {
+export const deleteOrder = async (req, res) => {
   try {
     await Order.findByIdAndDelete(req.params.id);
     res.status(200).json('Order deleted successfully');
   } catch (err) {
     res.status(500).json('An error occurred');
   }
-});
+};
 
 // get order
-router.get('/:id', VerifyTokenAndAuthorization, async (req, res) => {
+export const getOrder = async (req, res) => {
   try {
     const order = await Order.findOne({ userId: req.params.id });
     res.status(200).json(order);
   } catch (err) {
     res.status(500).json('An error occurred');
   }
-});
+};
 
 // get all order
-router.get('/', VerifyTokenAndAdmin, async (req, res) => {
+export const getAllOrder = async (req, res) => {
   try {
     const order = await Order.find().sort({ createdAt: -1 }).limit(5);
     res.status(200).json(order);
   } catch (err) {
     res.status(500).json('An error occurred');
   }
-});
+};
 
-router.get('/income', VerifyTokenAndAdmin, async (req, res) => {
+export const getIncome = async (req, res) => {
   const date = new Date();
   const lastMonth = new Date(date.setMonth(date.getMonth() - 1));
   const previousMonth = new Date(
@@ -97,6 +92,4 @@ router.get('/income', VerifyTokenAndAdmin, async (req, res) => {
   } catch (err) {
     res.status(500).json('An error occured');
   }
-});
-
-module.exports = router;
+};
